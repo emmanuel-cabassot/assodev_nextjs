@@ -12,7 +12,7 @@ export const AuthContext = createContext({
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(null || Object);
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState(null);
 
@@ -99,16 +99,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const meInfos = async () => {
     try {
-      console.log('1');
-
       setIsLoading(true);
-      const token = localStorage.getItem('token');
+      const tokenStorage = localStorage.getItem('token');
 
-      if (!token) {
+      if (!tokenStorage) {
         return;
       }
       var jwt = require('jsonwebtoken');
-      const decoded = jwt.decode(token);
+      const decoded = jwt.decode(tokenStorage);
       console.log('decoded', decoded);
       const currentTimestamp = Math.floor(Date.now() / 1000);
       const tokenLifetime = 1 * 60; // 5 minutes en secondes
@@ -117,14 +115,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         // Le jeton a expiré
         setToken(null);
         setUser(null);
-        return
+        throw new Error('Token expired');
       }
 
       const response = await fetch('http://localhost:3000/user/me', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          authorization: `Bearer ${token}`,
+          authorization: `Bearer ${tokenStorage}`,
         },
       });
       if (response.ok) {
@@ -135,33 +133,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         // Enregistre les informations de jeton dans le local storage
         console.log('ca passe')
         setUser(data);
-        const user = await fetch('http://localhost:3000/user/me', {
-          method: 'GET',
-
-          headers: {
-            'Content-Type': 'application/json',
-            authorization: `Bearer ${data.access_token}`,
-          },
-
-        });
-        const userData = await user.json();
-        setUser(userData);
-        console.log('userData', userData);
-        // Redirige l'utilisateur vers la page d'accueil
+        console.log('token', token)
+        setToken(tokenStorage);
+        console.log('tokenbis', token)
         Router.push('/');
       } else if (response.status === 400) {
-        console.log('3');
 
-        throw new Error('Invalid email or password');
+        throw new Error('error status 400');
       } else {
-        console.log('4');
 
         throw new Error('Something went wrong');
       }
     } catch (error) {
-      console.log('5');
 
-      // Handle error
+      throw new Error("on est dans le catch et donc la requete n'est pas envoyée");
     }
   };
 
