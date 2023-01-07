@@ -1,7 +1,14 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { AuthContext } from '../../context/authContext';
+import { UserContext } from '../../context/userContext';
+import { useContext, useEffect } from 'react';
 
 export const Header = () => {
+  const { token, meInfos, logout } = useContext(AuthContext);
+  useEffect(() => {
+    meInfos();
+  }, []);
   return (
     <header>
       <div>
@@ -24,6 +31,25 @@ export const Header = () => {
                   About us
                 </Link>
               </li>
+              {token ? (
+                <>
+                  <Link href={"/about-us"} >Profil</Link>
+                  <button onClick={logout}>Logout</button>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <Link href="/auth/register">
+                      register
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/auth/login">
+                      login
+                    </Link>
+                  </li>
+                </>
+              )}
             </ul>
           </nav>
         </div>
