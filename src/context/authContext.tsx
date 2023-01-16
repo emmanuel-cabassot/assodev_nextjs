@@ -20,44 +20,47 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<object | null>(null);
 
   const login = async (formData: any) => {
-    try {
-      setIsLoading(true);
-      const response = await fetch(`${urlApiNest}/user/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-      if (response.ok) {
-        const data = await response.json();
-        console.log('data', data);
-        // Enregistre les informations de jeton dans le local storage
-        localStorage.setItem('token', data.access_token);
-        localStorage.setItem('refresh_token', data.refresh_token);
-        setToken(data);
-        const user = await fetch(`${urlApiNest}/user/me`, {
-          method: 'GET',
+    fetch('https://jsonplaceholder.typicode.com/todos/1')
+      .then(response => response.json())
+      .then(json => console.log(json))
+    // try {
+    //   setIsLoading(true);
+    //   const response = await fetch(`http://5.196.88.154/api/user/login`, {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify(formData)
+    //   });
+    //   if (response.ok) {
+    //     const data = await response.json();
+    //     console.log('data', data);
+    //     // Enregistre les informations de jeton dans le local storage
+    //     localStorage.setItem('token', data.access_token);
+    //     localStorage.setItem('refresh_token', data.refresh_token);
+    //     setToken(data);
+    //     const user = await fetch(`${urlApiNest}/user/me`, {
+    //       method: 'GET',
 
-          headers: {
-            'Content-Type': 'application/json',
-            authorization: `Bearer ${data.access_token}`,
-          },
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //         authorization: `Bearer ${data.access_token}`,
+    //       },
 
-        });
-        const userData = await user.json();
-        setUser(userData);
-        console.log('userData', userData);
-        // Redirige l'utilisateur vers la page d'accueil
-        Router.push('/');
-      } else if (response.status === 400) {
-        throw new Error('Invalid email or password');
-      } else {
-        throw new Error('Something went wrong');
-      }
-    } catch (error) {
-      // Handle error
-    }
+    //     });
+    //     const userData = await user.json();
+    //     setUser(userData);
+    //     console.log('userData', userData);
+    //     // Redirige l'utilisateur vers la page d'accueil
+    //     Router.push('/');
+    //   } else if (response.status === 400) {
+    //     throw new Error('Invalid email or password');
+    //   } else {
+    //     throw new Error('Something went wrong');
+    //   }
+    // } catch (error) {
+    //   // Handle error
+    // }
   };
 
   const logout = () => {
