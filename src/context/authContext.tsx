@@ -1,25 +1,28 @@
 import React, { createContext, useState } from 'react';
 import Router from 'next/router';
+import { url } from 'inspector';
+const urlApiNest = process.env.NEXT_PUBLIC_NEXT_APP_API_URL;
 
 export const AuthContext = createContext({
-  token: null,
+  user: null as object | null,
+  token: null as string | null,
+  refreshToken: () => {},
   login: (formData: any) => { },
   register: (formData: any) => { },
-  user: null,
   logout: () => { },
   meInfos: () => { },
   isLoading: false,
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [token, setToken] = useState(null || Object);
-  const [isLoading, setIsLoading] = useState(false);
-  const [user, setUser] = useState(null);
+  const [token, setToken] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState<object | null>(null);
 
   const login = async (formData: any) => {
     try {
       setIsLoading(true);
-      const response = await fetch('http://localhost:3000/user/login', {
+      const response = await fetch(`${urlApiNest}/user/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -33,7 +36,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         localStorage.setItem('token', data.access_token);
         localStorage.setItem('refresh_token', data.refresh_token);
         setToken(data);
-        const user = await fetch('http://localhost:3000/user/me', {
+        const user = await fetch(`${urlApiNest}/user/me`, {
           method: 'GET',
 
           headers: {
@@ -62,7 +65,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.removeItem('token');
     localStorage.removeItem('refresh_token');
     setToken(null);
-    setUser(null);
+    setUser(prevToken =>null);
     // Redirige l'utilisateur vers la page de connexion
     Router.push('/');
   };
@@ -70,7 +73,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const register = async (formData: any) => {
     try {
       setIsLoading(true);
-      const response = await fetch('http://localhost:3000/user/register', {
+      const response = await fetch(`${urlApiNest}/user/register`, {
         method: 'POST',
         headers: {
 
@@ -99,10 +102,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const meInfos = async () => {
     try {
+      console.log('on rentre dans meInfos')
       setIsLoading(true);
       const tokenStorage = localStorage.getItem('token');
 
       if (!tokenStorage) {
+        console.log('1');
+
         return;
       }
       var jwt = require('jsonwebtoken');
@@ -114,11 +120,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (currentTimestamp - decoded.exp > tokenLifetime) {
         // Le jeton a expiré
         setToken(null);
-        setUser(null);
+        setUser(prevToken =>null);
         throw new Error('Token expired');
       }
 
-      const response = await fetch('http://localhost:3000/user/me', {
+      const response = await fetch(`${urlApiNest}/user/me`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -131,11 +137,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const data = await response.json();
         console.log('data', data);
         // Enregistre les informations de jeton dans le local storage
-        console.log('ca passe')
-        setUser(data);
-        console.log('token', token)
-        setToken(tokenStorage);
-        console.log('tokenbis', token)
+        setUser(prevToken =>data);
+        setToken(prevToken => tokenStorage);
+
         Router.push('/');
       } else if (response.status === 400) {
 
@@ -150,8 +154,39 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+    const refreshToken = async () => {
+      const refreshToken = localStorage.getItem('refresh_token');
+      if (!refreshToken) {
+        return;
+      }
+      var jwt = require('jsonwebtoken');
+      const decoded = await jwt.decode(localStorage.getItem('token'));
+      const idUser = decoded.id;
+      console.log('idUser', idUser);
+      
+      const response = await fetch(`${urlApiNest}/user/refresh/${refreshToken}/${idUser}`, {
+        method: 'GET'
+      });
+      if (response.ok) {
+        const data = await response.json();
+        // Enregistre les informations de jeton dans le local storage
+        localStorage.setItem('token', data.access_token);
+        localStorage.setItem('refresh_token', data.refresh_token);
+        console.log('refresh_token dans refreshtoken() : ', localStorage.getItem('refresh_token'));
+        
+        setToken(data);
+        Router.push('/');
+      } else if (response.status === 400) {
+        throw new Error('Invalid email or password');
+      } else {
+        throw new Error('Something went wrong');
+      }
+
+    };
+
   const context = {
     token,
+    refreshToken,
     user,
     meInfos,
     login,
@@ -161,7 +196,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, login, register, logout, meInfos, user, isLoading }}>
+    <AuthContext.Provider value={{ token, refreshToken, login, register, logout, meInfos, user, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,14 +1,16 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { AuthContext } from '../../context/authContext';
-import { UserContext } from '../../context/userContext';
 import { useContext, useEffect } from 'react';
+const urlApiNest = process.env.NEXT_PUBLIC_NEXT_APP_API_URL;
 
 export const Header = () => {
-  const { token, meInfos, logout } = useContext(AuthContext);
+  const { token, meInfos, logout, user, refreshToken } = useContext(AuthContext);
   useEffect(() => {
     meInfos();
   }, []);
+  
+  // const imageProfile = user ? user.profileImage : "tux_love_windowsd6d93104-a8f5-48c7-b882-f72f204b85cb.png";
   return (
     <header>
       <div>
@@ -26,15 +28,28 @@ export const Header = () => {
                   Events
                 </Link>
               </li>
+              
               <li>
                 <Link href="/about-us">
                   About us
                 </Link>
               </li>
-              {token ? (
+              {token && user ? (
                 <>
-                  <Link href={"/about-us"} >Profil</Link>
-                  <button onClick={logout}>Logout</button>
+                  <li>
+                    <Link href={"/about-us"} >
+                      <Image
+                        // src={`${urlApiNest}/user/profile-image/${user.profileImage}`}
+                        src={`${urlApiNest}/user/profile-image/tux_love_windowsd6d93104-a8f5-48c7-b882-f72f204b85cb.png`}
+                        alt={'photo'}
+                        width={20}
+                        height={20}
+                      />
+                    </Link>
+                  </li>
+                  <li>
+                    <button onClick={logout}>Logout</button>
+                  </li>
                 </>
               ) : (
                 <>

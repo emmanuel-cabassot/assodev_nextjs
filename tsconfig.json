@@ -30,7 +30,7 @@
     "**/*.tsx",
     "data/data.json",
     ".next/types/**/*.ts"
-  ],
+, "src/components/header/Header.tsx"  ],
   "exclude": [
     "node_modules"
   ]

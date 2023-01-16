@@ -1,7 +1,6 @@
 import Router from 'next/router';
-
-const apiUrl = process.env.NEXT_APP_API_URL;
-
+const Url = process.env.NEXT_PUBLIC_NEXT_APP_API_URL;
+console.log('Url', Url);
 export const AuthRegisterCallApi = async (formData: any) => {
   try {
     const response = await fetch(`http://localhost:3000/user/register`, {

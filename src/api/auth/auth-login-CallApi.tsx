@@ -1,10 +1,10 @@
 import Router from 'next/router';
 
-const apiUrl = process.env.NEXT_APP_API_URL;
+const urlApiNest = process.env.NEXT_PUBLIC_NEXT_APP_API_URL;
 
 export const AuthLoginCallApi = async (formData: any) => {
     try {
-        const response = await fetch('http://localhost:3000/user/login', {
+        const response = await fetch(`${urlApiNest}/user/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
