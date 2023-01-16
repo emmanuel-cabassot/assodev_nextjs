@@ -5,7 +5,7 @@ const nextConfig = {
   },
   reactStrictMode: true,
   images: {
-    domains: ['images.unsplash.com','wembleypark.com', 'localhost'],
+    domains: ['images.unsplash.com','wembleypark.com', 'localhost', '5.196.88.154'],
   },
   
 }
