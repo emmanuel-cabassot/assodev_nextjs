@@ -4,7 +4,7 @@ const urlApiNest = process.env.NEXT_PUBLIC_NEXT_APP_API_URL;
 
 export const AuthLoginCallApi = async (formData: any) => {
     try {
-        const response = await fetch(`${urlApiNest}/user/login`, {
+        const response = await fetch(`http://5.196.88.154/api/user/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
