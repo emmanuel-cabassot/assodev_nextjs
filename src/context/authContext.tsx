@@ -20,10 +20,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<object | null>(null);
 
   const login = async (formData: any) => {
-    // fetch('https://jsonplaceholder.typicode.com/todos/1')
-    //   .then(response => response.json())
-    //   .then(json => console.log(json))
-    
     try {
       setIsLoading(true);
       const response = await fetch(`https://api-projectdev.fr/api/user/login`, {
@@ -40,7 +36,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         localStorage.setItem('token', data.access_token);
         localStorage.setItem('refresh_token', data.refresh_token);
         setToken(data);
-        const user = await fetch(`${urlApiNest}/user/me`, {
+        const user = await fetch(`https://api-projectdev.fr/api/user/me`, {
           method: 'GET',
 
           headers: {
