@@ -6,7 +6,7 @@ const urlApiNest = process.env.NEXT_PUBLIC_NEXT_APP_API_URL;
 export const AuthContext = createContext({
   user: null as object | null,
   token: null as string | null,
-  refreshToken: () => { },
+  refreshToken: () => {},
   login: (formData: any) => { },
   register: (formData: any) => { },
   logout: () => { },
@@ -16,64 +16,52 @@ export const AuthContext = createContext({
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState<object | null>(null);
 
   const login = async (formData: any) => {
     // fetch('https://jsonplaceholder.typicode.com/todos/1')
     //   .then(response => response.json())
     //   .then(json => console.log(json))
+    
+    try {
+      setIsLoading(true);
+      const response = await fetch(`https://api-projectdev.fr/api/user/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log('data', data);
+        // Enregistre les informations de jeton dans le local storage
+        localStorage.setItem('token', data.access_token);
+        localStorage.setItem('refresh_token', data.refresh_token);
+        setToken(data);
+        const user = await fetch(`${urlApiNest}/user/me`, {
+          method: 'GET',
 
-    fetch('https://api-projectdev.fr/api/user/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(formData)
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Success:', data);
-      })
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${data.access_token}`,
+          },
 
-    // try {
-    //   setIsLoading(true);
-    //   const response = await fetch(`http://5.196.88.154/api/user/login`, {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify(formData)
-    //   });
-    //   if (response.ok) {
-    //     const data = await response.json();
-    //     console.log('data', data);
-    //     // Enregistre les informations de jeton dans le local storage
-    //     localStorage.setItem('token', data.access_token);
-    //     localStorage.setItem('refresh_token', data.refresh_token);
-    //     setToken(data);
-    //     const user = await fetch(`${urlApiNest}/user/me`, {
-    //       method: 'GET',
-
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //         authorization: `Bearer ${data.access_token}`,
-    //       },
-
-    //     });
-    //     const userData = await user.json();
-    //     setUser(userData);
-    //     console.log('userData', userData);
-    //     // Redirige l'utilisateur vers la page d'accueil
-    //     Router.push('/');
-    //   } else if (response.status === 400) {
-    //     throw new Error('Invalid email or password');
-    //   } else {
-    //     throw new Error('Something went wrong');
-    //   }
-    // } catch (error) {
-    //   // Handle error
-    // }
+        });
+        const userData = await user.json();
+        setUser(userData);
+        console.log('userData', userData);
+        // Redirige l'utilisateur vers la page d'accueil
+        Router.push('/');
+      } else if (response.status === 400) {
+        throw new Error('Invalid email or password');
+      } else {
+        throw new Error('Something went wrong');
+      }
+    } catch (error) {
+      // Handle error
+    }
   };
 
   const logout = () => {
@@ -81,7 +69,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.removeItem('token');
     localStorage.removeItem('refresh_token');
     setToken(null);
-    setUser(prevToken => null);
+    setUser(prevToken =>null);
     // Redirige l'utilisateur vers la page de connexion
     Router.push('/');
   };
@@ -136,7 +124,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (currentTimestamp - decoded.exp > tokenLifetime) {
         // Le jeton a expiré
         setToken(null);
-        setUser(prevToken => null);
+        setUser(prevToken =>null);
         throw new Error('Token expired');
       }
 
@@ -153,7 +141,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const data = await response.json();
         console.log('data', data);
         // Enregistre les informations de jeton dans le local storage
-        setUser(prevToken => data);
+        setUser(prevToken =>data);
         setToken(prevToken => tokenStorage);
 
         Router.push('/');
@@ -170,35 +158,35 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const refreshToken = async () => {
-    const refreshToken = localStorage.getItem('refresh_token');
-    if (!refreshToken) {
-      return;
-    }
-    var jwt = require('jsonwebtoken');
-    const decoded = await jwt.decode(localStorage.getItem('token'));
-    const idUser = decoded.id;
-    console.log('idUser', idUser);
+    const refreshToken = async () => {
+      const refreshToken = localStorage.getItem('refresh_token');
+      if (!refreshToken) {
+        return;
+      }
+      var jwt = require('jsonwebtoken');
+      const decoded = await jwt.decode(localStorage.getItem('token'));
+      const idUser = decoded.id;
+      console.log('idUser', idUser);
+      
+      const response = await fetch(`${urlApiNest}/user/refresh/${refreshToken}/${idUser}`, {
+        method: 'GET'
+      });
+      if (response.ok) {
+        const data = await response.json();
+        // Enregistre les informations de jeton dans le local storage
+        localStorage.setItem('token', data.access_token);
+        localStorage.setItem('refresh_token', data.refresh_token);
+        console.log('refresh_token dans refreshtoken() : ', localStorage.getItem('refresh_token'));
+        
+        setToken(data);
+        Router.push('/');
+      } else if (response.status === 400) {
+        throw new Error('Invalid email or password');
+      } else {
+        throw new Error('Something went wrong');
+      }
 
-    const response = await fetch(`${urlApiNest}/user/refresh/${refreshToken}/${idUser}`, {
-      method: 'GET'
-    });
-    if (response.ok) {
-      const data = await response.json();
-      // Enregistre les informations de jeton dans le local storage
-      localStorage.setItem('token', data.access_token);
-      localStorage.setItem('refresh_token', data.refresh_token);
-      console.log('refresh_token dans refreshtoken() : ', localStorage.getItem('refresh_token'));
-
-      setToken(data);
-      Router.push('/');
-    } else if (response.status === 400) {
-      throw new Error('Invalid email or password');
-    } else {
-      throw new Error('Something went wrong');
-    }
-
-  };
+    };
 
   const context = {
     token,
