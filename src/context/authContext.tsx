@@ -35,6 +35,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         // Enregistre les informations de jeton dans le local storage
         localStorage.setItem('token', data.access_token);
         localStorage.setItem('refresh_token', data.refresh_token);
+        console.log('data.access_token', data.access_token);
+        console.log('data.refresh_token', data.refresh_token);
+        
+        
         setToken(data);
         const user = await fetch(`https://api-projectdev.fr/api/user/me`, {
           method: 'GET',
