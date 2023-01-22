@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const login = async (formData: any) => {
     try {
       setIsLoading(true);
-      const response = await fetch(`https://api-projectdev.fr/api/user/login`, {
+      const response = await fetch(`${urlApiNest}/user/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         
         
         setToken(data);
-        const user = await fetch(`https://api-projectdev.fr/api/user/me`, {
+        const user = await fetch(`${urlApiNest}/user/me`, {
           method: 'GET',
 
           headers: {
