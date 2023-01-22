@@ -40,8 +40,8 @@ export const Header = () => {
                   <li>
                     <Link href={"/about-us"} >
                       <Image
-                        // src={`${urlApiNest}/user/profile-image/${user.profileImage}`}
-                        src={`${urlApiNest}/user/profile-image/tux_love_windowsd6d93104-a8f5-48c7-b882-f72f204b85cb.png`}
+                        src={`${urlApiNest}/user/profile-image/${user.profileImage}`}
+                        //src={`${urlApiNest}/user/profile-image/tux_love_windowsd6d93104-a8f5-48c7-b882-f72f204b85cb.png`}
                         alt={'photo'}
                         width={20}
                         height={20}
