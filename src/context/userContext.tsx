@@ -19,12 +19,3 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         </UserContext.Provider>
     );
 };
-
-// export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-//     return (
-//         <UserContext.Provider value={{ user: null
-//         }}>
-//             {children}
-//         </UserContext.Provider>
-//     );
-// };

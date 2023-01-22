@@ -10,7 +10,8 @@ export const Header = () => {
     meInfos();
   }, []);
   
-  // const imageProfile = user ? user.profileImage : "tux_love_windowsd6d93104-a8f5-48c7-b882-f72f204b85cb.png";
+  const imageProfile = user && user.profileImage != null ? user.profileImage : "tux_love_windowsd6d93104-a8f5-48c7-b882-f72f204b85cb.png";
+
   return (
     <header>
       <div>
