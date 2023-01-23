@@ -19,7 +19,7 @@ const urlApiNest = process.env.NEXT_PUBLIC_NEXT_APP_API_URL;
 
 const pages = [{ name: 'home', url: '/' }, { name: 'Events', url: '/events' }, { name: 'About', url: '/about-us' },]
 const userConnected = [{ name: 'Profile', url: '/profile' }];
-const userNotConnected = [{ name: 'Login', url: '/auth/login' }, { name: 'Register', url: '/  auth/register' }];
+const userNotConnected = [{ name: 'Login', url: '/auth/login' }, { name: 'Register', url: '/auth/register' }];
 
 export const Header = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
