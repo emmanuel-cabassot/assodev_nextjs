@@ -135,7 +135,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
         setUser(userInfos);
 
-        Router.push('/');
+        // Router.push('/');
     } catch (error: any) {
 
       setErrorMessage(error?.message);
