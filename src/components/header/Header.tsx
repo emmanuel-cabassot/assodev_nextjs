@@ -18,11 +18,17 @@ import AdbIcon from '@mui/icons-material/Adb';
 const urlApiNest = process.env.NEXT_PUBLIC_NEXT_APP_API_URL;
 
 const pages = [{ name: 'home', url: '/' }, { name: 'Events', url: '/events' }, { name: 'About', url: '/about-us' },]
-const settings = [{ name : 'Profile', url: '/profile' }];
+const userConnected = [{ name: 'Profile', url: '/profile' }];
+const userNotConnected = [{ name: 'Login', url: '/auth/login' }, { name: 'Register', url: '/  auth/register' }];
 
 export const Header = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+
+  const logoutAndCloseMenu = () => {
+    logout();
+    handleCloseUserMenu();
+  };
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -53,23 +59,24 @@ export const Header = () => {
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-            <Link href="/">
-            <Typography
-              variant="h6"
-              noWrap
-              component="a"
-              sx={{
-                mr: 2,
-                display: { xs: 'none', md: 'flex' },
-                fontFamily: 'monospace',
-                fontWeight: 700,
-                letterSpacing: '.3rem',
-                color: 'inherit',
-                textDecoration: 'none',
-              }}
-            >
-              LOGO
-            </Typography>
+            <Link href="/" passHref legacyBehavior>
+              <Typography
+                variant="h6"
+                noWrap
+                component="a"
+                sx={{
+                  mr: 2,
+                  display: { xs: 'none', md: 'flex' },
+                  fontFamily: 'monospace',
+                  fontWeight: 700,
+                  letterSpacing: '.3rem',
+                  color: 'inherit',
+                  textDecoration: 'none',
+                }}
+              >
+                LOGO
+              </Typography>
+
             </Link>
 
             <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -102,7 +109,7 @@ export const Header = () => {
                 }}
               >
                 {pages.map((page) => (
-                  <Link href={page.url}>
+                  <Link href={page.url} passHref legacyBehavior>
                     <MenuItem key={page.name} onClick={handleCloseNavMenu}>
                       <Typography textAlign="center">{page.name}</Typography>
                     </MenuItem>
@@ -131,7 +138,7 @@ export const Header = () => {
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
               {pages.map((page) => (
-                <Link href={page.url}>
+                <Link href={page.url} passHref legacyBehavior>
                   <Button
                     key={page.name}
                     onClick={handleCloseNavMenu}
@@ -143,103 +150,64 @@ export const Header = () => {
               ))}
             </Box>
 
-            <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <div>
-                    <Image src={`${urlApiNest}/user/profile-image/${imageProfile}`} alt="avatar" width={40} height={40} />
-                  <Avatar alt="avatar" sx={{ bgcolor: "white" }} src={`${urlApiNest}/user/profile-image/${imageProfile}`} />
-                  </div>
-                </IconButton>
-              </Tooltip>
-              <Menu
-                sx={{ mt: '45px' }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                {settings.map((setting) => (
-                  <Link href={setting.url}>
-                  <MenuItem key={setting.name} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">{setting.name}</Typography>
-                  </MenuItem>
-                  </Link>
-                ))}
-              </Menu>
+            <Box sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              flexGrow: 0,
+            }}>
+              {user ? (
+                <>
+                  <Tooltip title="Open settings">
+                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                        <Avatar alt="avatar" sx={{ bgcolor: "white" }} src={`${urlApiNest}/user/profile-image/${imageProfile}`} />
+                    </IconButton>
+                  </Tooltip>
+                  <Menu
+                    sx={{ mt: '45px' }}
+                    id="menu-appbar"
+                    anchorEl={anchorElUser}
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    open={Boolean(anchorElUser)}
+                    onClose={handleCloseUserMenu}
+                  >
+                    {userConnected.map((setting) => (
+                      <Link href={setting.url} passHref legacyBehavior>
+                        <MenuItem key={setting.name} onClick={handleCloseUserMenu}>
+                          <Typography textAlign="center">{setting.name}</Typography>
+                        </MenuItem>
+                      </Link>
+                    ))}
+                    <MenuItem onClick={logoutAndCloseMenu}>
+                      <Typography textAlign="center">Logout</Typography>
+                    </MenuItem>
+                  </Menu>
+                </>
+              ) : (
+                <>
+                  {userNotConnected.map((setting) => (
+                    <Link href={setting.url} passHref legacyBehavior>
+                      <Button
+                        key={setting.name}
+                        sx={{ my: 2, color: 'white', display: 'block' }}
+                      >
+                        {setting.name}
+                      </Button>
+                    </Link>
+                  ))}
+                </>
+              )}
             </Box>
           </Toolbar>
         </Container>
       </AppBar>
-      {/* <div>
-                <div className="topNav">
-                  <nav>
-                    <ul>
-                      <li>
-                        <Link href="/">
-                          Home
-                        </Link>
-                      </li>
-                      <li>
-                        <Link href="/events">
-                          Events
-                        </Link>
-                      </li>
-
-                      <li>
-                        <Link href="/about-us">
-                          About us
-                        </Link>
-                      </li>
-                      {user ? (
-                        <>
-                          <li>
-                            <Link href={"/about-us"} >
-                              <Image
-                                src={`${urlApiNest}/user/profile-image/${imageProfile}`}
-                                alt={'photo'}
-                                width={20}
-                                height={20}
-                              />
-                            </Link>
-                          </li>
-                          <li>
-                            <button onClick={logout}>Logout</button>
-                          </li>
-                        </>
-                      ) : (
-                        <>
-                          <li>
-                            <Link href="/auth/register">
-                              register
-                            </Link>
-                          </li>
-                          <li>
-                            <Link href="/auth/login">
-                              login
-                            </Link>
-                          </li>
-                        </>
-                      )}
-                    </ul>
-                  </nav>
-                </div>
-
-              </div> */}
-
-
     </header>
   );
 };
-
-
-
