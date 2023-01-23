@@ -5,7 +5,7 @@ import { useContext, useEffect } from 'react';
 const urlApiNest = process.env.NEXT_PUBLIC_NEXT_APP_API_URL;
 
 export const Header = () => {
-  const { token, meInfos, logout, user, refreshToken } = useContext(AuthContext);
+  const { meInfos, logout, user } = useContext(AuthContext);
   useEffect(() => {
     meInfos();
   }, []);
@@ -35,13 +35,12 @@ export const Header = () => {
                   About us
                 </Link>
               </li>
-              {token && user ? (
+              { user ? (
                 <>
                   <li>
                     <Link href={"/about-us"} >
                       <Image
-                        src={`${urlApiNest}/user/profile-image/${user.profileImage}`}
-                        //src={`${urlApiNest}/user/profile-image/tux_love_windowsd6d93104-a8f5-48c7-b882-f72f204b85cb.png`}
+                        src={`${urlApiNest}/user/profile-image/${imageProfile}`}
                         alt={'photo'}
                         width={20}
                         height={20}
@@ -69,7 +68,7 @@ export const Header = () => {
             </ul>
           </nav>
         </div>
-        <p className="title"> Mon super site</p>
+        <p className="title"> Mon site</p>
       </div>
     </header>
   );
