@@ -54,9 +54,9 @@
 //     );
 // }
 
+import React, { useState } from 'react';
 import { AuthContext } from '../../context/authContext';
 import { useContext } from 'react';
-import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -67,9 +67,12 @@ import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ClearIcon from '@mui/icons-material/Clear';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ButtonBase, IconButton } from '@mui/material';
 
 function Copyright(props: any) {
     return (
@@ -87,10 +90,26 @@ function Copyright(props: any) {
 const theme = createTheme();
 
 export default function SignUp() {
-
     const { register } = useContext(AuthContext);
+    const [imageURL, setImageURL] = useState('');
+    const [image, setImage] = useState('');
+
+    const handleChangeImage = (event: any) => {
+        setImageURL(URL.createObjectURL(event.target.files[0]));
+        setImage(event.target.files[0]);
+    }
+    const handleChangeDeleteImage = (event: any) => {
+        setImageURL('');
+        setImage('');
+    }
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+
+        // Envoyer l'image au serveur pour le traitement ici
+        console.log(image);
+        // ...
+
+
         const data = new FormData(event.currentTarget);
         const dataRegister = ({
             surname: data.get('surname'),
@@ -152,12 +171,36 @@ export default function SignUp() {
                                     autoComplete="new-password"
                                 />
                             </Grid>
-                            <Grid item xs={12}>
-                                <FormControlLabel
-                                    control={<Checkbox value="allowExtraEmails" color="primary" />}
-                                    label="I want to receive inspiration, marketing promotions and updates via email."
+                            <Grid item xs={4} >
+                                <input
+                                    accept="image/*"
+                                    id="contained-button-file"
+                                    multiple
+                                    type="file"
+                                    onChange={handleChangeImage}
+                                    hidden
                                 />
+                                <label htmlFor="contained-button-file">
+                                    <Button variant="contained" color="primary" component="span">
+                                        Avatar
+                                    </Button>
+                                </label>
                             </Grid>
+
+                            {imageURL ?
+                                <>
+                                    <Grid item xs={2} justifySelf="flex-end" >
+                                        <IconButton onClick={handleChangeDeleteImage}>
+                                            <DeleteIcon style={{ color: ' #ef3c16 ' }} />
+                                        </IconButton>
+                                    </Grid>
+                                    <Grid item xs={3} justifySelf="flex-end" >
+                                        <Avatar alt="avatar" sx={{ bgcolor: "white" }} src={imageURL} />
+                                    </Grid>
+
+                                </>
+                                : null
+                            }
                         </Grid>
                         <Button
                             type="submit"
