@@ -17,9 +17,9 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 const urlApiNest = process.env.NEXT_PUBLIC_NEXT_APP_API_URL;
 
-const pages = [{ name: 'home', url: '/' }, { name: 'Events', url: '/events' }, { name: 'About', url: '/about-us' },]
-const userConnected = [{ name: 'Profile', url: '/profile' }];
-const userNotConnected = [{ name: 'Login', url: '/auth/login' }, { name: 'Register', url: '/auth/register' }];
+const pages = [{ id: 1, name: 'home', url: '/' }, { id: 2, name: 'Events', url: '/events' }, { id: 3, name: 'About', url: '/about-us' },]
+const userConnected = [{ id: 11, name: 'Profile', url: '/profile' }];
+const userNotConnected = [{ id:21, name: 'Login', url: '/auth/login' }, { id: 22, name: 'Register', url: '/auth/register' }];
 
 export const Header = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
@@ -109,8 +109,8 @@ export const Header = () => {
                 }}
               >
                 {pages.map((page) => (
-                  <Link href={page.url} passHref legacyBehavior>
-                    <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                  <Link key={page.id +1} href={page.url} passHref legacyBehavior>
+                    <MenuItem key={page.name + 1} onClick={handleCloseNavMenu}>
                       <Typography textAlign="center">{page.name}</Typography>
                     </MenuItem>
                   </Link>
@@ -138,7 +138,7 @@ export const Header = () => {
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
               {pages.map((page) => (
-                <Link href={page.url} passHref legacyBehavior>
+                <Link key={page.id} href={page.url} passHref legacyBehavior>
                   <Button
                     key={page.name}
                     onClick={handleCloseNavMenu}
@@ -179,7 +179,7 @@ export const Header = () => {
                     onClose={handleCloseUserMenu}
                   >
                     {userConnected.map((setting) => (
-                      <Link href={setting.url} passHref legacyBehavior>
+                      <Link key={setting.id} href={setting.url} passHref legacyBehavior>
                         <MenuItem key={setting.name} onClick={handleCloseUserMenu}>
                           <Typography textAlign="center">{setting.name}</Typography>
                         </MenuItem>
@@ -193,7 +193,7 @@ export const Header = () => {
               ) : (
                 <>
                   {userNotConnected.map((setting) => (
-                    <Link href={setting.url} passHref legacyBehavior>
+                    <Link key={setting.id} href={setting.url} passHref legacyBehavior>
                       <Button
                         key={setting.name}
                         sx={{ my: 2, color: 'white', display: 'block' }}
