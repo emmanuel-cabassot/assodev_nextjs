@@ -57,7 +57,7 @@ export default function SignUp() {
         // Envoyer l'image au serveur pour le traitement ici
         if ( image && image != '' ) {
             imageToSend = new FormDataImage()
-            imageToSend.append('image', image);
+            imageToSend.append('file', image);
             console.log('formData', imageToSend)
             console.log('image', image.size)
             
