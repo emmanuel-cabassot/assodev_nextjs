@@ -1,60 +1,5 @@
-// import React, { useState } from 'react';
-// import { AuthContext } from '../../context/authContext';
-// import { useContext } from 'react';
-
-// export default function AuthRegisterForm() {
-//     const [name, setName] = useState('');
-//     const [email, setEmail] = useState('');
-//     const [password, setPassword] = useState('');
-//     const { register } = useContext(AuthContext);
-
-//     function handleSubmit(event: any) {
-//         console.log('on passe dans le submit')
-//         event.preventDefault()
-
-//         const data = {
-//             surname: event.target.name.value,
-//             email: event.target.email.value,
-//             password: event.target.password.value
-//         }
-
-//         register(data)
-//     }
-//     return (
-//         <main>
-//             <h1>Register</h1>
-//             <form onSubmit={handleSubmit}>
-//                 <label htmlFor="name">Name:</label>
-//                 <input
-//                     type="text"
-//                     id="name"
-//                     value={name}
-//                     onChange={event => setName(event.target.value)}
-//                 />
-//                 <br />
-//                 <label htmlFor="email">Email:</label>
-//                 <input
-//                     type="email"
-//                     id="email"
-//                     value={email}
-//                     onChange={event => setEmail(event.target.value)}
-//                 />
-//                 <br />
-//                 <label htmlFor="password">Password:</label>
-//                 <input
-//                     type="password"
-//                     id="password"
-//                     value={password}
-//                     onChange={event => setPassword(event.target.value)}
-//                 />
-//                 <br />
-//                 <button type="submit">Register</button>
-//             </form>
-//         </main>
-//     );
-// }
-
 import React, { useState } from 'react';
+const FormDataImage = require('form-data');
 import { AuthContext } from '../../context/authContext';
 import { useContext } from 'react';
 import Avatar from '@mui/material/Avatar';
@@ -74,6 +19,9 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ButtonBase, IconButton } from '@mui/material';
 
+import { AvatarUploadReqApi } from '../../../api/projectDev/user/avatarUpload';
+
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwic3VybmFtZSI6ImVtbWFudWVsIiwiZW1haWwiOiJlbW1hbnVlbEBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTY3NDY0MzE4MywiZXhwIjoxNjc3MjM1MTgzfQ.qXMqBrmfz-ODwNdv80oeQ4cZiIyvXzJjSpuPlHQD67Y'
 function Copyright(props: any) {
     return (
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -92,7 +40,7 @@ const theme = createTheme();
 export default function SignUp() {
     const { register } = useContext(AuthContext);
     const [imageURL, setImageURL] = useState('');
-    const [image, setImage] = useState('');
+    const [image, setImage] = useState('') as any;
 
     const handleChangeImage = (event: any) => {
         setImageURL(URL.createObjectURL(event.target.files[0]));
@@ -105,18 +53,25 @@ export default function SignUp() {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
+        let imageToSend: any  = null
         // Envoyer l'image au serveur pour le traitement ici
-        console.log(image);
-        // ...
-
-
+        if ( image && image != '' ) {
+            imageToSend = new FormDataImage()
+            imageToSend.append('image', image);
+            console.log('formData', imageToSend)
+            console.log('image', image.size)
+            
+            AvatarUploadReqApi(imageToSend, token)
+        }
+            
         const data = new FormData(event.currentTarget);
         const dataRegister = ({
-            surname: data.get('surname'),
+            surname: data.get('surname'), 
             email: data.get('email'),
             password: data.get('password'),
         });
-        register(dataRegister);
+
+        register(dataRegister, imageToSend);
     };
 
     return (

@@ -1,6 +1,5 @@
 import Image from "next/image"
 import Link from "next/link"
-
 interface Event {
   id: string;
   image: string;
@@ -26,5 +25,4 @@ export const HomePage = ({ data }: { data: any }) => (
     }
     )}
   </div>
-
 );
