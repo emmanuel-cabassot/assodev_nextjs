@@ -5,6 +5,7 @@ import { loginReqApi } from '../../api/projectDev/user/login';
 import { userMeReqApi } from '../../api/projectDev/user/me';
 import { userRegisterReqApi } from '../../api/projectDev/user/register';
 import { refreshTokenReqApi } from '../../api/projectDev/user/refreshToken';
+import { AvatarUploadReqApi } from '../../api/projectDev/user/avatarUpload';
 
 const urlApiNest = process.env.NEXT_PUBLIC_NEXT_APP_API_URL;
 
@@ -12,7 +13,7 @@ export const AuthContext = createContext({
   user: null as UserInterface | null,
   refreshToken: () => { },
   login: (formData: any) => { },
-  register: (formData: any) => { },
+  register: (formData: any, image: any) => { },
   logout: () => { },
   meInfos: () => { },
   errorMessage: '',
@@ -78,7 +79,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
    * Enregistre les informations de jeton dans le local storage
    * Redirige l'utilisateur vers la page d'accueil
    */
-  const register = async (formData: any) => {
+  const register = async (formData: any, image: any) => {
     try {
       setIsLoading(true);
       setErrorMessage('');
@@ -87,7 +88,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       // Enregistre les informations de jeton dans le local storage
       localStorage.setItem('token', register.access_token);
       localStorage.setItem('refresh_token', register.refresh_token);
+      if(image) {
+        const avatarUpload = await AvatarUploadReqApi(image, register.access_token);
+        
+      }
       const userInfos = await userMeReqApi(register.access_token);
+
       // Enregistre les informations de l'utilisateur
       setUser(userInfos);
       // Redirige l'utilisateur vers la page d'accueil
