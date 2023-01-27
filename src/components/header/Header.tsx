@@ -54,8 +54,9 @@ export const Header = () => {
   const imageProfile = user && user.profileImage != null ? user.profileImage : "tux_love_windowsd6d93104-a8f5-48c7-b882-f72f204b85cb.png";
 
   return (
-    <header>
-      <AppBar position="static">
+    <>
+      <AppBar 
+      position="static">
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -208,6 +209,6 @@ export const Header = () => {
           </Toolbar>
         </Container>
       </AppBar>
-    </header>
+    </>
   );
 };
