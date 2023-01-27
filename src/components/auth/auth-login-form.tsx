@@ -52,7 +52,7 @@ export default function AuthLoginForm() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
+
         <ThemeProvider theme={theme}>
           <Container component="main" maxWidth="xs">
             <CssBaseline />
@@ -116,7 +116,7 @@ export default function AuthLoginForm() {
             <Copyright sx={{ mt: 8, mb: 4 }} />
           </Container>
         </ThemeProvider>
-      </main>
+
     </>
   );
 }

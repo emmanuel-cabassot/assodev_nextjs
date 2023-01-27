@@ -1,22 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import * as React from 'react';
+import ProfileInfo from './components/profile-info';
 import { AuthContext } from '../../context/authContext';
 import { useContext } from 'react';
-import Image from 'next/image';
+import ResponsiveDrawer from '../atomes/nav/responsiveDrawer';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import CssBaseline from '@mui/material/CssBaseline';
 
 const urlApiNest = process.env.NEXT_PUBLIC_NEXT_APP_API_URL;
+const drawerWidth = 240;
 
 export default function ProfileIndex() {
-    const { user } = useContext(AuthContext);
-    console.log(user);
-    const avatar = user?.profileImage ? user?.profileImage : "tux_love_windowsd6d93104-a8f5-48c7-b882-f72f204b85cb.png";
-    return (
-        <main>
-            <h1>Profile</h1>
-            <Image src={`${urlApiNest}/user/profile-image/${avatar}`} alt="Picture of the user" width={200} height={200} />
-            <p>Vous êtes connecté en tant que {user?.email}</p>
-            <p>Votre surname {user?.surname}</p>
-        </main>
-    );
+
+  return (
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+      {/* Grid pour le drawer (menu) */}
+      <Box
+        display={{ xs: 'none', sm: 'none', md: 'block' }}
+        component="div"
+        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        aria-label="mailbox folders"
+      >
+
+          <ResponsiveDrawer />
+
+      </Box>
+      {/* Grid pour le profile info */}
+      <Grid item xs={12}
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'column',
+
+          width: '100%',
+        }}
+      >
+        <ProfileInfo />
+      </Grid>
+    </Box>
+  );
 }
 
