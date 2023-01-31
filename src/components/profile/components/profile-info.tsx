@@ -1,5 +1,5 @@
 import { AuthContext } from '../../../context/authContext';
-import ProfileImage from './profile-info/profile-image/profile-image';
+import ProfileImage from './profile-image';
 import { useContext, useState, useEffect } from 'react';
 import Grid from '@mui/material/Grid';
 import { DialogTitle } from '@mui/material';
