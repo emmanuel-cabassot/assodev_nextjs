@@ -1,6 +1,8 @@
 const urlApiNest = process.env.NEXT_PUBLIC_NEXT_APP_API_URL;
 
 export const AvatarUploadReqApi = async (image: any, token: string = '') => {
+    console.log('imageAvatar', image)
+    console.log('tokenAvatar', token)
     try {
         if (token == '') {
             token = localStorage.getItem('token') || '';

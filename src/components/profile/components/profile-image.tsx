@@ -1,22 +1,34 @@
+const FormDataImage = require('form-data');
+import { AvatarUploadReqApi } from '../../../../api/projectDev/user/avatarUpload';
 import { useState, useContext } from 'react';
-import { AuthContext } from '../../../../../context/authContext';
+import { AuthContext } from '../../../context/authContext';
 import { Avatar, Button } from "@mui/material";
 import { Box } from '@mui/system';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const urlApiNest = process.env.NEXT_PUBLIC_NEXT_APP_API_URL;
+//console.log('token', token)
+//console.log('localstorage', localStorage.getItem('token'))
+
+
 
 export default function ProfileImage() {
     const [image, setImage] = useState('') as any;
     const [imageURL, setImageURL] = useState('');
-    const { user } = useContext(AuthContext);
+    const { user, meInfos } = useContext(AuthContext);
     const avatar = user?.profileImage ? user?.profileImage : "tux_love_windowsd6d93104-a8f5-48c7-b882-f72f204b85cb.png";
 
-    const handleChangeImage = (event: any) => {
-        const file = event.target.files[0];
-        console.log(file);
+    
+    const handleChangeImage = async (event: any) => {
+        const file = event.target.files[0]
+        
         setImage(file);
         setImageURL(URL.createObjectURL(event.target.files[0]));
+        const imageToSend = new FormDataImage()
+        imageToSend.append('file', file);
+
+        await AvatarUploadReqApi(imageToSend)
+        meInfos()
     }
 
     return (
@@ -24,7 +36,7 @@ export default function ProfileImage() {
             {/* Avatar user  */}
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Avatar
-                    src={`${urlApiNest}/user/profile-image/${imageURL ? imageURL : avatar}`}
+                    src= { imageURL ? imageURL : `${urlApiNest}/user/profile-image/${imageURL ? imageURL : avatar}`}
                     alt="Picture of the user"
                     sx={{ width: 160, height: 160 }}
                 />

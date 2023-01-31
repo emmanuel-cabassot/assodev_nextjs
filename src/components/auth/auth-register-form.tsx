@@ -41,6 +41,7 @@ export default function SignUp() {
 
     const handleChangeImage = (event: any) => {
         setImageURL(URL.createObjectURL(event.target.files[0]));
+        console.log('imageURL', URL.createObjectURL(event.target.files[0]))
         setImage(event.target.files[0]);
     }
     const handleChangeDeleteImage = (event: any) => {
