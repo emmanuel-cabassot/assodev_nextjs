@@ -17,7 +17,7 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 const urlApiNest = process.env.NEXT_PUBLIC_NEXT_APP_API_URL;
 
-const pages = [{ id: 1, name: 'home', url: '/' }, { id: 2, name: 'Events', url: '/events' }, { id: 3, name: 'About', url: '/about-us' },]
+const pages = [{ id: 1, name: 'home', url: '/' }, { id: 2, name: 'Events', url: '/events' }, { id: 3, name: 'About', url: '/about-us' }, { id: 4, name: 'Projects', url: '/projects' }, { id: 5, name: 'Start project', url: '/start-project' }]
 const userConnected = [{ id: 11, name: 'Profile', url: '/profile' }];
 const userNotConnected = [{ id:21, name: 'Login', url: '/auth/login' }, { id: 22, name: 'Register', url: '/auth/register' }];
 

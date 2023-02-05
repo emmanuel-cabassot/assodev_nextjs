@@ -9,9 +9,9 @@ const EventCatPage = ({ data, city }: { data: any, city: any }) => {
                 {data.map((event: any) => {
                     return (
                         <Link key={event.id} href={`/events/${event.city}/${event.id}`}>
-                        <img src={event.image} alt={event.title} width={400} height={300} />
-                        <h2>{event.title}</h2>
-                    </Link>
+                            <img src={event.image} alt={event.title} width={400} height={300} />
+                            <h2>{event.title}</h2>
+                        </Link>
                     )
                 })}
             </div>
