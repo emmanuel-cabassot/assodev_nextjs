@@ -26,5 +26,7 @@ export const AuthLoginCallApi = async (formData: any) => {
         }
     } catch (error) {
         // Handle error
+        console.log('error', error);
+        
     }
 };

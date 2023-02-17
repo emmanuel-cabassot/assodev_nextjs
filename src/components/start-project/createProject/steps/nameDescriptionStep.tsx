@@ -1,10 +1,21 @@
-import { Box, Container, CssBaseline, Typography, TextField } from '@mui/material';
+import { Box, Container, CssBaseline, Typography, TextField, Button } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import { CreateProjectFormContext } from '../../../../context/createProjectFormContext';
+import { useContext, useState } from 'react';
 
 const theme = createTheme();
 
-export function NameDescriptionStep() {
+export default function NameDescriptionStep() {
+    const { name, saveName, shortDescription, saveShortDescription } = useContext(CreateProjectFormContext);
+
+    const handleNameSendToContext = (e: any) => {
+        saveName(e.target.value)
+    }
+
+    const handleShortDescriptionSendToContext = (e: any) => {
+        saveShortDescription(e.target.value)
+    }
+
     return (
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">
@@ -27,21 +38,21 @@ export function NameDescriptionStep() {
                         id="name"
                         label="Name of your project"
                         name="name"
-                        // autoComplete=""
+                        value={name}
                         autoFocus
+                        onChange={handleNameSendToContext}
                     />
                     <TextField
                         margin="normal"
                         fullWidth
                         name="shortDescription"
+                        value={shortDescription}
                         label="Short description"
                         id="shortDescription"
-                        // autoComplete="current-password"
+                        onChange={handleShortDescriptionSendToContext}
                     />
                 </Box>
             </Container>
         </ThemeProvider>
-
-
     );
 }

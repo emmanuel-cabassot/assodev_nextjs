@@ -1,14 +1,16 @@
 import * as React from 'react';
-import { NameDescriptionStep } from './steps/nameDescriptionStep';
-import { DescriptionStep } from './steps/descriptionStep';
+import NameDescriptionStep from './steps/nameDescriptionStep';
+import DescriptionStep from './steps/descriptionStep';
+import ImageStep from './steps/imageStep';
+import PreviewStep from './steps/previewStep';
+import StatusStep from './steps/statusStep';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 
-const steps = ['Name / Short description', 'Description', 'Add image?', 'Review', 'Status'];
+const steps = ['Name / Short description', 'Description', 'Image / Techno', 'Review', 'Status'];
 
 
 export default function CreateProjectPage() {
@@ -18,16 +20,18 @@ export default function CreateProjectPage() {
   const [skipped, setSkipped] = React.useState(new Set<number>());
 
   // permet de retourné le contenu de la page en fonction de la page active
-  const renderStep = (step : number) => {
+  const renderStep = (step: number) => {
     switch (step) {
       case 0:
         return <NameDescriptionStep />;
       case 1:
         return <DescriptionStep />;
       case 2:
-        return "3";
+        return <ImageStep />;
       case 3:
-        return "4";
+        return <PreviewStep />;
+      case 4:
+        return <StatusStep />;
       default:
         return null;
     }
@@ -77,10 +81,10 @@ export default function CreateProjectPage() {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Stepper 
+      <Stepper
         activeStep={activeStep}
         sx={{ backgroundColor: 'transparent', marginTop: '20px' }}
-       >
+      >
         {steps.map((label, index) => {
           const stepProps: { completed?: boolean } = {};
           const labelProps: {
@@ -101,46 +105,36 @@ export default function CreateProjectPage() {
           );
         })}
       </Stepper >
-      {activeStep === steps.length ? (
-        // c'est la page disant que tout est fini 
-        <React.Fragment>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            All steps completed - you&apos;re finished
-          </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-            <Box sx={{ flex: '1 1 auto' }} />
-            <Button onClick={handleReset}>Reset</Button>
-          </Box>
-        </React.Fragment>
-      ) : (
-        <React.Fragment>
-          {/* le contenu de la page, c'est la que l'on va mettre les formulaires */}
-          <Box sx={{ mt: 2, mb: 1 }}>{renderStep(activeStep)}</Box>
-          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-            {/* C'est le bouton back */}
-            <Button
-              color="inherit"
-              disabled={activeStep === 0}
-              onClick={handleBack}
-              sx={{ mr: 1 }}
-            >
-              Back
+      <React.Fragment>
+        {/* le contenu de la page, c'est la que l'on va mettre les formulaires */}
+        <Box sx={{ mt: 2, mb: 1 }}>{renderStep(activeStep)}</Box>
+        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+          {/* C'est le bouton back */}
+          <Button
+            color="inherit"
+            disabled={activeStep === 0}
+            onClick={handleBack}
+            sx={{ mr: 1 }}
+          >
+            Back
+          </Button>
+          {/* permet de mettre un espace entre les deux boutons */}
+          <Box sx={{ flex: '1 1 auto' }} />
+          {/* C'est le skip */}
+          {isStepOptional(activeStep) && (
+            <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
+              Skip
             </Button>
-            {/* permet de mettre un espace entre les deux boutons */}
-            <Box sx={{ flex: '1 1 auto' }} />
-            {/* C'est le skip */}
-            {isStepOptional(activeStep) && (
-              <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
-                Skip
-              </Button>
-            )}
-            {/* apparition du bouton suivant ou finish */}
-            <Button onClick={handleNext}>
-              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-            </Button>
-          </Box>
-        </React.Fragment>
-      )}
+          )}
+          {/* apparition du bouton suivant ou finish */}
+          {activeStep === steps.length - 1 ? (
+            <Button variant="contained" onClick={handleNext} > Save your project</Button>
+          ) : (
+            <Button onClick={handleNext}>Next</Button>
+          )}
+
+        </Box>
+      </React.Fragment>
     </Box>
   );
 }
