@@ -2,18 +2,21 @@ import { Box, Container, CssBaseline, Typography, TextField, Button } from '@mui
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { CreateProjectFormContext } from '../../../../context/createProjectFormContext';
 import { useContext, useState } from 'react';
+import { verify } from 'crypto';
 
 const theme = createTheme();
 
 export default function NameDescriptionStep() {
-    const { name, saveName, shortDescription, saveShortDescription } = useContext(CreateProjectFormContext);
+    const { name, saveName, shortDescription, saveShortDescription, VerifyIsCompleteForm } = useContext(CreateProjectFormContext);
 
     const handleNameSendToContext = (e: any) => {
-        saveName(e.target.value)
+        saveName(e.target.value),
+        VerifyIsCompleteForm()
     }
 
     const handleShortDescriptionSendToContext = (e: any) => {
-        saveShortDescription(e.target.value)
+        saveShortDescription(e.target.value),
+        VerifyIsCompleteForm()
     }
 
     return (

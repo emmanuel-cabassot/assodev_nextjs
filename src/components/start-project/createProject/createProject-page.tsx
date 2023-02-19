@@ -1,7 +1,8 @@
-import * as React from 'react';
+import { useState, useContext, Fragment, ReactNode } from 'react';
+import { CreateProjectFormContext } from '../../../context/createProjectFormContext';
 import NameDescriptionStep from './steps/nameDescriptionStep';
 import DescriptionStep from './steps/descriptionStep';
-import ImageStep from './steps/imageStep';
+import ImageStep from './steps/imageTechStep';
 import PreviewStep from './steps/previewStep';
 import StatusStep from './steps/statusStep';
 import Box from '@mui/material/Box';
@@ -10,14 +11,18 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 
+
 const steps = ['Name / Short description', 'Description', 'Image / Techno', 'Review', 'Status'];
 
 
 export default function CreateProjectPage() {
   //qui permet de savoir sur quelle page on est
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [activeStep, setActiveStep] = useState(0);
   // permet de savoir si on a skip une page
-  const [skipped, setSkipped] = React.useState(new Set<number>());
+  const [skipped, setSkipped] = useState(new Set<number>());
+
+  // import du context de la création de projet
+  const { isComplete, VerifyIsCompleteForm, registerProject } = useContext(CreateProjectFormContext);
 
   // permet de retourné le contenu de la page en fonction de la page active
   const renderStep = (step: number) => {
@@ -88,7 +93,7 @@ export default function CreateProjectPage() {
         {steps.map((label, index) => {
           const stepProps: { completed?: boolean } = {};
           const labelProps: {
-            optional?: React.ReactNode;
+            optional?: ReactNode;
           } = {};
           // if (isStepOptional(index)) {
           //   labelProps.optional = (
@@ -105,7 +110,7 @@ export default function CreateProjectPage() {
           );
         })}
       </Stepper >
-      <React.Fragment>
+      <Fragment>
         {/* le contenu de la page, c'est la que l'on va mettre les formulaires */}
         <Box sx={{ mt: 2, mb: 1 }}>{renderStep(activeStep)}</Box>
         <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
@@ -128,13 +133,13 @@ export default function CreateProjectPage() {
           )}
           {/* apparition du bouton suivant ou finish */}
           {activeStep === steps.length - 1 ? (
-            <Button variant="contained" onClick={handleNext} > Save your project</Button>
+            <Button variant="contained" onClick={registerProject} > Save your project</Button>
           ) : (
             <Button onClick={handleNext}>Next</Button>
           )}
 
         </Box>
-      </React.Fragment>
+      </Fragment>
     </Box>
   );
 }
