@@ -53,14 +53,13 @@ const formats = [
 
 export default function DescriptionStep() {
 
-    const { saveDescription, description } = useContext(CreateProjectFormContext);
-
-    const [value, setValue] = useState()
+    const { saveDescription, description, VerifyIsCompleteForm } = useContext(CreateProjectFormContext);
 
     // attention normarlement on set une value (e.target.value) mais grace à react quill (e) suffit
     const handleDescriptionSendToContext = (e: any) => {
-        setValue(e)
+        
         saveDescription(e)
+        VerifyIsCompleteForm()
     }
 
     return (

@@ -22,7 +22,6 @@ export default function ImageStep() {
         console.log('imageToSend', imageToSend)
         saveImage(imageToSend)
         saveImageUrl(URL.createObjectURL(event.target.files[0]))
-        // await AddImageReqApi(imageToSend, 1)
     }
 
     return (
