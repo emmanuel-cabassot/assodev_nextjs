@@ -1,20 +1,36 @@
-import React, { useContext, useState } from 'react';
-import { Box, Container, CssBaseline, Typography, TextField, Button } from '@mui/material';
+import React, { useContext, useState, useEffect } from 'react';
+import { Box, Container, CssBaseline, Typography, TextField, Chip, Autocomplete } from '@mui/material';
 import { CreateProjectFormContext } from '../../../../context/createProjectFormContext';
+import getAllCompetencesReqApi from '../../../../../api/projectDev/competence/getAllCompetences';
 import Image from 'next/image';
 const FormDataImage = require('form-data');
 
+interface option {
+    name: string;
+    id:number;
+}
+
 export default function ImageStep() {
-    const { image, saveImage, imageUrl, saveImageUrl } = useContext(CreateProjectFormContext);
-    //const { user } = useContext(AuthContext);
 
+    // récupère les compétences de la base de données
+    useEffect(() => {
+        getAllCompetencesReqApi().then((res) => {
+            console.log('res', res)
+            setCompetencesList(res);
+
+        });
+    }, []);
+
+    // récupère les données du context
+    const { image, saveImage, imageUrl, saveImageUrl, competences, saveCompetences } = useContext(CreateProjectFormContext);
+    // useState pour les données du formulaire
     const [imageProject, setImageProject] = useState('') as any;
-    // const [imageURL, setImageURL] = useState('');
-    // const avatar = user?.profileImage ? user?.profileImage : "tux_love_windowsd6d93104-a8f5-48c7-b882-f72f204b85cb.png";
+    const [competencesList, setCompetencesList] = useState([]) as any;
+    const [valueCompetencesTags, setValueCompetencesTags] = useState() as any;
 
+    // envoie l'image au serveur et récupère l'url de l'image pour l'afficher
     const handleChangeImage = async (event: any) => {
         const file = event.target.files[0]
-
         setImageProject(file);
         // setImageURL(URL.createObjectURL(event.target.files[0]));
         const imageToSend = new FormDataImage()
@@ -24,12 +40,24 @@ export default function ImageStep() {
         saveImageUrl(URL.createObjectURL(event.target.files[0]))
     }
 
+    const handleChangeCompetences = ( newValue: object) => {
+        console.log('newValue', newValue)
+        saveCompetences(newValue)
+        console.log('competences', competences)
+        // ajout de la new value dans le tableau des compétences
+
+    }
+
+
+    console.log('competences', competences)
+
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
             <Box
                 sx={{
                     marginTop: 5,
+                    marginBottom: 5,
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
@@ -39,12 +67,14 @@ export default function ImageStep() {
                     Image
                 </Typography>
                 <Image
+                    key={imageUrl}
                     src={imageUrl}
                     alt="Picture of the user"
                     width={280}
                     height={180}
                 />
                 <TextField
+                    key="keyimage"
                     margin="normal"
                     fullWidth
                     id="image"
@@ -56,6 +86,28 @@ export default function ImageStep() {
                     onChange={handleChangeImage}
                 />
             </Box>
+
+            <Autocomplete
+                key="keyautocomplete"
+                multiple
+                id="tags-standard"
+                value={competences}
+                options={competencesList}
+                getOptionLabel={(option : any) => option.name}
+                defaultValue={[]}
+                onChange={(event, newValue) => {
+                    handleChangeCompetences(newValue)
+                }}
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        variant="standard"
+                        label="Technos"
+                        placeholder="Technos"
+                    />  
+                )}
+
+            />
         </Container>
     );
 }

@@ -23,3 +23,5 @@ export const AddImageReqApi = async (image: any, idProject: any) => {
         throw error;
     }
 }
+
+export default AddImageReqApi;

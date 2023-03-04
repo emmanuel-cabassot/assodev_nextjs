@@ -18,11 +18,11 @@ const urlApiNest = process.env.NEXT_PUBLIC_NEXT_APP_API_URL;
 function ProjectsIndex(projects) {
     if(Array.isArray(projects.projects)) {
     return (
-        <Box display="flex">
+        <Box display="flex" flexWrap="wrap">
             {projects.projects.map(project => {
                 const avatarUser = project.user.profileImage ? project.user.profileImage : "tux_love_windowsd6d93104-a8f5-48c7-b882-f72f204b85cb.png";
                 return (
-                    <Card sx={{ maxWidth: 345, m:3 }} key={project.id} >
+                    <Card sx={{ Width: 345, maxWidth:345, m:3 }} key={project.id} >
                         <CardHeader
                             avatar={
                                 <Avatar
@@ -37,6 +37,7 @@ function ProjectsIndex(projects) {
                         <CardMedia
                             component="img"
                             height="194"
+                            width="345"
                             image={`${urlApiNest}/project/project-image/${project.projectImage}`}
                             alt="Paella dish"
                         />
