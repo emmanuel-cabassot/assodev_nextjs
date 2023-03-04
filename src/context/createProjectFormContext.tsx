@@ -1,6 +1,7 @@
 import { createContext, useState, ReactNode } from 'react';
 import AddProjectReqApi from '../../api/projectDev/projects/addProject';
-import { AddImageReqApi } from '../../api/projectDev/projects/addImage';
+import AddImageReqApi from '../../api/projectDev/projects/addImage';
+import AddCompetenceToProjectReqApi from '../../api/projectDev/project-competence/addCompetenceToProject';
 
 const urlApiNest = process.env.NEXT_PUBLIC_NEXT_APP_API_URL;
 
@@ -15,6 +16,8 @@ export const CreateProjectFormContext = createContext({
     saveImage: (image: any) => { },
     imageUrl: '',
     saveImageUrl: (imageUrl: any) => { },
+    competences: [],
+    saveCompetences: (competences: any) => { },
     isOnLineProject: false,
     saveIsOnLineProject: (statusProject: boolean) => { },
     isSearchPersonn: false,
@@ -30,6 +33,7 @@ export const CreateProjectFormProvider = ({ children }: { children: ReactNode })
     const [description, setDescription] = useState('');
     const [image, setImage] = useState('image null');
     const [imageUrl, setImageUrl] = useState(`${urlApiNest}/project/project-image/switch3415c855-02fc-4371-9154-730beeb60595.png`);
+    const [competences, setCompetences] = useState([]) as any;
     const [isOnLineProject, setIsOnLineProject] = useState(false);
     const [isSearchPersonn, setIsSearchPersonn] = useState(false);
     const [isComplete, setIsComplete] = useState(false);
@@ -52,6 +56,10 @@ export const CreateProjectFormProvider = ({ children }: { children: ReactNode })
 
     const saveImageUrl = (imageUrl: any) => {
         setImageUrl(imageUrl);
+    };
+
+    const saveCompetences = (competences: any) => {
+        setCompetences(competences);
     };
 
     const saveIsOnLineProject = (statusProject: any) => {
@@ -88,6 +96,14 @@ export const CreateProjectFormProvider = ({ children }: { children: ReactNode })
                 const imageToBdd = await AddImageReqApi(image, newProject.id)
                 return  imageToBdd;
             }
+            if (competences) {
+                console.log('on rentre dans competences')
+                competences.map(async (competence: any) => {
+                    const newCompetence = await AddCompetenceToProjectReqApi(competence, newProject.id);
+                    return newCompetence;
+                    
+                })
+            }
         }
     };
 
@@ -102,6 +118,8 @@ export const CreateProjectFormProvider = ({ children }: { children: ReactNode })
         saveImage,
         imageUrl,
         saveImageUrl,
+        competences,
+        saveCompetences,
         isOnLineProject,
         saveIsOnLineProject,
         isSearchPersonn,
