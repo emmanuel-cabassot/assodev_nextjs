@@ -16,13 +16,17 @@ const steps = ['Name / Short description', 'Description', 'Image / Techno', 'Rev
 
 
 export default function CreateProjectPage() {
-  //qui permet de savoir sur quelle page on est
+  // permet de savoir sur quelle page on est
   const [activeStep, setActiveStep] = useState(0);
   // permet de savoir si on a skip une page
   const [skipped, setSkipped] = useState(new Set<number>());
 
   // import du context de la création de projet
-  const { isComplete, VerifyIsCompleteForm, registerProject } = useContext(CreateProjectFormContext);
+  const {
+    isComplete,
+    VerifyIsCompleteForm,
+    registerProject
+  } = useContext(CreateProjectFormContext);
 
   // permet de retourné le contenu de la page en fonction de la page active
   const renderStep = (step: number) => {
@@ -131,7 +135,7 @@ export default function CreateProjectPage() {
               Skip
             </Button>
           )}
-          {/* apparition du bouton suivant ou finish */}
+          {/* apparition du bouton suivant ou save your project */}
           {activeStep === steps.length - 1 ? (
             <Button variant="contained" onClick={registerProject} > Save your project</Button>
           ) : (

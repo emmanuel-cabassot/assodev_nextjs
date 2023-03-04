@@ -22,7 +22,15 @@ export default function ImageStep() {
     }, []);
 
     // récupère les données du context
-    const { image, saveImage, imageUrl, saveImageUrl, competences, saveCompetences } = useContext(CreateProjectFormContext);
+    const {
+        image,
+        saveImage,
+        imageUrl,
+        saveImageUrl,
+        competences,
+        saveCompetences
+    } = useContext(CreateProjectFormContext);
+
     // useState pour les données du formulaire
     const [imageProject, setImageProject] = useState('') as any;
     const [competencesList, setCompetencesList] = useState([]) as any;
@@ -40,6 +48,7 @@ export default function ImageStep() {
         saveImageUrl(URL.createObjectURL(event.target.files[0]))
     }
 
+    // envoie les compétences au context
     const handleChangeCompetences = ( newValue: object) => {
         console.log('newValue', newValue)
         saveCompetences(newValue)
@@ -47,13 +56,12 @@ export default function ImageStep() {
         // ajout de la new value dans le tableau des compétences
 
     }
-
-
     console.log('competences', competences)
 
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
+            {/* Box pour l'image */}
             <Box
                 sx={{
                     marginTop: 5,
@@ -66,6 +74,7 @@ export default function ImageStep() {
                 <Typography component="h1" variant="h5">
                     Image
                 </Typography>
+                {/* Image */}
                 <Image
                     key={imageUrl}
                     src={imageUrl}
@@ -73,6 +82,7 @@ export default function ImageStep() {
                     width={280}
                     height={180}
                 />
+                {/* input pour changer l'image */}
                 <TextField
                     key="keyimage"
                     margin="normal"
@@ -87,6 +97,7 @@ export default function ImageStep() {
                 />
             </Box>
 
+            {/* box pour les compétences */}
             <Autocomplete
                 key="keyautocomplete"
                 multiple

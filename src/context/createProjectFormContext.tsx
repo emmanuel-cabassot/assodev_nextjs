@@ -79,6 +79,7 @@ export const CreateProjectFormProvider = ({ children }: { children: ReactNode })
         }
     };
 
+    // methode qui enregistre le projet dans la base de donnée
     const registerProject = async () => {
         // recuperation des données du formulaire pour les formater
         let formDataProject = {
@@ -87,21 +88,22 @@ export const CreateProjectFormProvider = ({ children }: { children: ReactNode })
             description: description,
             isOnLineProject: isOnLineProject,
             isSearchPersonn: isSearchPersonn,
+            competences: competences,
             age: 22
         }
-        // envoie des données au serveur
+        // requete qui envoie les données au serveur
         const newProject = await AddProjectReqApi(JSON.stringify(formDataProject));
         if (newProject) {
             if (imageUrl !== `${urlApiNest}/project/project-image/switch3415c855-02fc-4371-9154-730beeb60595.png`) {
                 const imageToBdd = await AddImageReqApi(image, newProject.id)
-                return  imageToBdd;
+                //return  imageToBdd;
             }
             if (competences) {
                 console.log('on rentre dans competences')
                 competences.map(async (competence: any) => {
                     const newCompetence = await AddCompetenceToProjectReqApi(competence, newProject.id);
-                    return newCompetence;
-                    
+
+                    //return newCompetence;
                 })
             }
         }
