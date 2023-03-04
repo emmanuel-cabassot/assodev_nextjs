@@ -20,6 +20,7 @@ export const AddCompetenceToProjectReqApi = async (competences: any, idProject: 
         });
 
         if (response.ok) {
+            console.log('response', response)
             return response.json();
         } else {
             throw new Error('Something went wrong');

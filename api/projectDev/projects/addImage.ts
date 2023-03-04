@@ -14,7 +14,6 @@ export const AddImageReqApi = async (image: any, idProject: any) => {
             body: image
         });
         if (response.ok) {
-            console.log('response', response);
             return response.json();
         } else {
             throw new Error('Something went wrong');

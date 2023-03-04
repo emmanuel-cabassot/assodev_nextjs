@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Box, Container, CssBaseline, Typography, TextField, Button, Card, CardHeader, CardMedia, CardContent, CardActions, IconButton, Avatar } from '@mui/material';
+import { Box, Container, CssBaseline, Typography, TextField, Button, Card, CardHeader, CardMedia, CardContent, CardActions, IconButton, Avatar, Chip } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import { CreateProjectFormContext } from '../../../../context/createProjectFormContext';
@@ -8,11 +8,20 @@ import { AuthContext } from '../../../../context/authContext';
 const urlApiNest = process.env.NEXT_PUBLIC_NEXT_APP_API_URL;
 
 export default function PreviewStep() {
-    const { name, shortDescription, description, image, imageUrl } = useContext(CreateProjectFormContext);
+    const { 
+        name,
+        shortDescription,
+        description,
+        image,
+        imageUrl,
+        competences,
+     } = useContext(CreateProjectFormContext);
     const { user } = useContext(AuthContext);
 
     return (
+
         <Box display="flex">
+            {/* card du projet */}
             <Card sx={{ maxWidth: 345, m: 3 }} key="1" >
                 <CardHeader
                     avatar={
@@ -29,25 +38,32 @@ export default function PreviewStep() {
                     component="img"
                     height="194"
                     image={`${imageUrl}`}
-                    alt="Paella dish"
+                    alt="Image du projet"
                 />
                 <CardContent>
+                    {/* description du projet */}
                     <Typography variant="body2" color="text.secondary">
                         {shortDescription}
                     </Typography>
+                    <Typography variant="body2" color="text.secondary" paddingTop="15px">
+                        Technos
+                    </Typography>
+                    {/* compétences du projet */}
                     <Typography variant="body2" color="text.secondary">
-                        <span key="5464">Nest.js</span>
-
-                        {/* {project.competences.map(competence => {
-                                    return (
-                                        <span key={competence.competence.name}>{competence.competence.name}</span>
-                                    )
-                                }
-                                )} */}
+                        {competences.map((competence: any) => {
+                            console.log('competence', competence)
+                            return (
+                                <Chip
+                                    label={competence.name}
+                                    sx={{ m: 0.5 }}
+                                />
+                            )
+                        })}
                     </Typography>
                     <Typography variant="body2" color="text.secondary" paddingTop="15px">
                         Team
                     </Typography>
+                    {/* avatar des membres de l'équipe */}
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Avatar
                             key="1122"
