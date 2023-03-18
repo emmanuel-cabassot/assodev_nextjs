@@ -12,7 +12,7 @@ import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 
 
-const steps = ['Name / Short description', 'Description', 'Image / Techno', 'Review', 'Status'];
+const steps = ['Name / Short description', 'Description', 'Image / Techno', 'Status', 'Review' ];
 
 
 export default function CreateProjectPage() {
@@ -38,9 +38,9 @@ export default function CreateProjectPage() {
       case 2:
         return <ImageStep />;
       case 3:
-        return <PreviewStep />;
-      case 4:
         return <StatusStep />;
+      case 4:
+        return <PreviewStep />;
       default:
         return null;
     }
@@ -99,11 +99,6 @@ export default function CreateProjectPage() {
           const labelProps: {
             optional?: ReactNode;
           } = {};
-          // if (isStepOptional(index)) {
-          //   labelProps.optional = (
-          //     <Typography variant="caption">Optional</Typography>
-          //   );
-          // }
           if (isStepSkipped(index)) {
             stepProps.completed = false;
           }

@@ -41,7 +41,7 @@ export default function StatusStep() {
                 <FormControlLabel
                     disabled={isDisabled()}
                     value={isOnLineProject}
-                    control={<Switch color="primary" />}
+                    control={<Switch color="primary" checked={isOnLineProject} />}
                     label="Public"
                     labelPlacement="start"
                     onChange={handleIsOnLineProjectSendToContext}
@@ -50,7 +50,7 @@ export default function StatusStep() {
                 <FormControlLabel
                     disabled={!isComplete}
                     value={isSearchPersonn}
-                    control={<Switch color="secondary" />}
+                    control={<Switch color="secondary" checked={isSearchPersonn} />}
                     label="search collaborator"
                     labelPlacement="start"
                     onChange={handleIsSearchPersonnSendToContext}
