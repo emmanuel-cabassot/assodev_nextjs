@@ -133,7 +133,8 @@ export default function PreviewStep() {
                 </Box>
                 {/* is search collaborator */}
                 <Typography variant="body2" color="text.secondary" paddingTop="15px">
-                    {isSearchPersonn ? "Recherche de collaborateur" : "Pas de recherche de collaborateur"}
+                    search collaborator
+                    {isSearchPersonn ?  <PersonSearchIcon style={{ color: "green" }} />  : <PersonAddDisabledOutlinedIcon />}
                 </Typography>
                 {/* description du projet */}
                 <Typography variant="body2" color="text.secondary" paddingTop="15px">

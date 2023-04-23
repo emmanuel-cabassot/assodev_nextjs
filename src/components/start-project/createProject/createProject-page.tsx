@@ -11,24 +11,23 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 
-
-const steps = ['Name / Short description', 'Description', 'Image / Techno', 'Status', 'Review' ];
-
+// Liste des étapes du formulaire
+const steps = ['Name / Short description', 'Description', 'Image / Techno', 'Status', 'Review'];
 
 export default function CreateProjectPage() {
-  // permet de savoir sur quelle page on est
+  // État pour suivre l'étape active
   const [activeStep, setActiveStep] = useState(0);
-  // permet de savoir si on a skip une page
+  // État pour suivre les étapes ignorées
   const [skipped, setSkipped] = useState(new Set<number>());
 
-  // import du context de la création de projet
+  // Utilisation du contexte pour gérer l'état du formulaire
   const {
     isComplete,
     VerifyIsCompleteForm,
     registerProject
   } = useContext(CreateProjectFormContext);
 
-  // permet de retourné le contenu de la page en fonction de la page active
+  // Fonction pour afficher le contenu de l'étape en fonction de l'étape active
   const renderStep = (step: number) => {
     switch (step) {
       case 0:
@@ -46,14 +45,17 @@ export default function CreateProjectPage() {
     }
   };
 
+  // Fonction pour déterminer si une étape est facultative
   const isStepOptional = (step: number) => {
     return step === 1;
   };
 
+  // Fonction pour vérifier si une étape a été ignorée
   const isStepSkipped = (step: number) => {
     return skipped.has(step);
   };
 
+  // Gestionnaire d'événements pour passer à l'étape suivante
   const handleNext = () => {
     let newSkipped = skipped;
     if (isStepSkipped(activeStep)) {
@@ -65,14 +67,14 @@ export default function CreateProjectPage() {
     setSkipped(newSkipped);
   };
 
+  // Gestionnaire d'événements pour revenir à l'étape précédente
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
+  // Gestionnaire d'événements pour ignorer une étape
   const handleSkip = () => {
     if (!isStepOptional(activeStep)) {
-      // You probably want to guard against something like this,
-      // it should never occur unless someone's actively trying to break something.
       throw new Error("You can't skip a step that isn't optional.");
     }
 
@@ -84,36 +86,61 @@ export default function CreateProjectPage() {
     });
   };
 
+  // Gestionnaire d'événements pour réinitialiser le formulaire
   const handleReset = () => {
     setActiveStep(0);
   };
 
+  // Gestionnaire d'événements pour cliquer sur une étape spécifique
+  const handleStepClick = (step: number) => {
+    setActiveStep(step);
+  };
+
   return (
+    // Crée un conteneur pour le formulaire
     <Box sx={{ width: '100%' }}>
+      {/* Ajoute un Stepper pour afficher les étapes du formulaire */}
       <Stepper
         activeStep={activeStep}
         sx={{ backgroundColor: 'transparent', marginTop: '20px' }}
       >
+        {/* Itère sur les étapes et crée un Step pour chaque étape */}
         {steps.map((label, index) => {
+          // Initialise les propriétés de l'étape
           const stepProps: { completed?: boolean } = {};
+          // Initialise les propriétés de l'étiquette de l'étape
           const labelProps: {
             optional?: ReactNode;
+            onClick?: () => void;
           } = {};
+          // Si l'étape est ignorée, indique qu'elle n'est pas terminée
           if (isStepSkipped(index)) {
             stepProps.completed = false;
           }
+          // Ajoute un gestionnaire d'événements pour cliquer sur l'étiquette de l'étape
+          labelProps.onClick = () => handleStepClick(index);
           return (
-            <Step key={label} {...stepProps}>
-              <StepLabel {...labelProps}>{label}</StepLabel>
+            // Crée l'étape avec les propriétés définies 
+            // attention completed={false} annule le check de l'étape
+            <Step key={label} completed={false} {...stepProps}>
+              {/* Crée l'étiquette de l'étape avec les propriétés définies et un style pour le curseur */}
+              <StepLabel
+                {...labelProps}
+                style={{ cursor: 'pointer' }}
+              >
+                {label}
+              </StepLabel>
             </Step>
           );
         })}
-      </Stepper >
+      </Stepper>
+      {/* Fragment pour encapsuler les éléments suivants */}
       <Fragment>
-        {/* le contenu de la page, c'est la que l'on va mettre les formulaires */}
+        {/* Affiche le contenu de l'étape active */}
         <Box sx={{ mt: 2, mb: 1 }}>{renderStep(activeStep)}</Box>
+        {/* Crée une zone pour les boutons de navigation */}
         <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-          {/* C'est le bouton back */}
+          {/* Bouton "Back" pour revenir à l'étape précédente */}
           <Button
             color="inherit"
             disabled={activeStep === 0}
@@ -122,23 +149,27 @@ export default function CreateProjectPage() {
           >
             Back
           </Button>
-          {/* permet de mettre un espace entre les deux boutons */}
+          {/* Espace flexible entre les boutons */}
           <Box sx={{ flex: '1 1 auto' }} />
-          {/* C'est le skip */}
+          {/* Bouton "Skip" pour ignorer l'étape facultative */}
           {isStepOptional(activeStep) && (
             <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
               Skip
             </Button>
           )}
-          {/* apparition du bouton suivant ou save your project */}
+          {/* Bouton "Next" pour passer à l'étape suivante ou bouton "Save your project" pour enregistrer le projet */}
           {activeStep === steps.length - 1 ? (
-            <Button variant="contained" onClick={registerProject} > Save your project</Button>
+            <Button variant="contained" onClick={registerProject}>
+              Save your project
+            </Button>
           ) : (
             <Button onClick={handleNext}>Next</Button>
           )}
-
         </Box>
       </Fragment>
     </Box>
   );
 }
+
+
+
