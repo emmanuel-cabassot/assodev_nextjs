@@ -1,5 +1,7 @@
+// Importations nécessaires
 import { useState, useContext, Fragment, ReactNode } from 'react';
 import { CreateProjectFormContext } from '../../../context/createProjectFormContext';
+import { LayoutContext } from '../../../context/layoutContext';
 import NameDescriptionStep from './steps/nameDescriptionStep';
 import DescriptionStep from './steps/descriptionStep';
 import ImageStep from './steps/imageTechStep';
@@ -11,49 +13,43 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 
+// Liste des étapes du formulaire, chaque étape est un objet avec un label et un composant associé
+const steps = [
+  { label: 'Name / Short description', component: NameDescriptionStep },
+  { label: 'Description', component: DescriptionStep },
+  { label: 'Image / Techno', component: ImageStep },
+  { label: 'Status', component: StatusStep },
+  { label: 'Review', component: PreviewStep },
+];
 
-const steps = ['Name / Short description', 'Description', 'Image / Techno', 'Status', 'Review' ];
-
-
+// Composant principal
 export default function CreateProjectPage() {
-  // permet de savoir sur quelle page on est
-  const [activeStep, setActiveStep] = useState(0);
-  // permet de savoir si on a skip une page
-  const [skipped, setSkipped] = useState(new Set<number>());
+  // Gestion des états locaux avec les Hooks useState
+  const [activeStep, setActiveStep] = useState(0); // Étape active
+  const [skipped, setSkipped] = useState(new Set<number>()); // Étapes ignorées
 
-  // import du context de la création de projet
-  const {
-    isComplete,
-    VerifyIsCompleteForm,
-    registerProject
-  } = useContext(CreateProjectFormContext);
+  // Récupération des fonctions et variables du contexte CreateProjectFormContext
+  const { isComplete, VerifyIsCompleteForm, registerProject } = useContext(CreateProjectFormContext);
 
-  // permet de retourné le contenu de la page en fonction de la page active
+  // Récupération des hauteurs de l'en-tête et du pied de page du contexte LayoutContext
+  const { headerHeight, footerHeight } = useContext(LayoutContext);
+
+  // Calcul de la hauteur maximale du composant en fonction des hauteurs de l'en-tête et du pied de page
+  const heightMaxOfComponent = `calc(100vh - ${headerHeight}px - ${footerHeight}px - 120px)`;
+
+  // Rendu de l'étape en fonction de l'étape active
   const renderStep = (step: number) => {
-    switch (step) {
-      case 0:
-        return <NameDescriptionStep />;
-      case 1:
-        return <DescriptionStep />;
-      case 2:
-        return <ImageStep />;
-      case 3:
-        return <StatusStep />;
-      case 4:
-        return <PreviewStep />;
-      default:
-        return null;
-    }
+    const StepComponent = steps[step].component; // Récupération du composant correspondant à l'étape
+    return <StepComponent height={heightMaxOfComponent} />; // Rendu du composant avec la hauteur maximale en props
   };
 
-  const isStepOptional = (step: number) => {
-    return step === 1;
-  };
+  // Détermination si une étape est facultative (ici seulement l'étape 1 est facultative)
+  const isStepOptional = (step: number) => step === 1;
 
-  const isStepSkipped = (step: number) => {
-    return skipped.has(step);
-  };
+  // Vérification si une étape a été ignorée
+  const isStepSkipped = (step: number) => skipped.has(step);
 
+  // Passage à l'étape suivante
   const handleNext = () => {
     let newSkipped = skipped;
     if (isStepSkipped(activeStep)) {
@@ -65,15 +61,16 @@ export default function CreateProjectPage() {
     setSkipped(newSkipped);
   };
 
+  // Retour à l'étape précédente
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
+  // Ignorer une étape
+  // Ignorer une étape
   const handleSkip = () => {
     if (!isStepOptional(activeStep)) {
-      // You probably want to guard against something like this,
-      // it should never occur unless someone's actively trying to break something.
-      throw new Error("You can't skip a step that isn't optional.");
+      // Gérer l'erreur ici si l'étape n'est pas facultative
     }
 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -84,61 +81,63 @@ export default function CreateProjectPage() {
     });
   };
 
+  // Réinitialisation des étapes
   const handleReset = () => {
     setActiveStep(0);
   };
 
+  // Gestion du clic sur une étape
+  const handleStepClick = (step: number) => {
+    setActiveStep(step);
+  };
+
+  // Rendu du composant
   return (
     <Box sx={{ width: '100%' }}>
-      <Stepper
-        activeStep={activeStep}
-        sx={{ backgroundColor: 'transparent', marginTop: '20px' }}
-      >
-        {steps.map((label, index) => {
+      <Stepper activeStep={activeStep} sx={{ backgroundColor: 'transparent', marginTop: '20px' }}>
+        {steps.map((step, index) => {
           const stepProps: { completed?: boolean } = {};
-          const labelProps: {
-            optional?: ReactNode;
-          } = {};
+          const labelProps: { optional?: ReactNode; onClick?: () => void; } = {};
+
+          // Si l'étape est ignorée, elle n'est pas marquée comme complétée
           if (isStepSkipped(index)) {
             stepProps.completed = false;
           }
+
+          // Gestion du clic sur l'étape
+          labelProps.onClick = () => handleStepClick(index);
+
           return (
-            <Step key={label} {...stepProps}>
-              <StepLabel {...labelProps}>{label}</StepLabel>
+            <Step key={step.label} completed={false} {...stepProps}>
+              <StepLabel {...labelProps} style={{ cursor: 'pointer' }}>
+                {step.label}
+              </StepLabel>
             </Step>
           );
         })}
-      </Stepper >
+      </Stepper>
       <Fragment>
-        {/* le contenu de la page, c'est la que l'on va mettre les formulaires */}
         <Box sx={{ mt: 2, mb: 1 }}>{renderStep(activeStep)}</Box>
         <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-          {/* C'est le bouton back */}
-          <Button
-            color="inherit"
-            disabled={activeStep === 0}
-            onClick={handleBack}
-            sx={{ mr: 1 }}
-          >
+          <Button color="inherit" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
             Back
           </Button>
-          {/* permet de mettre un espace entre les deux boutons */}
           <Box sx={{ flex: '1 1 auto' }} />
-          {/* C'est le skip */}
           {isStepOptional(activeStep) && (
             <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
               Skip
             </Button>
           )}
-          {/* apparition du bouton suivant ou save your project */}
           {activeStep === steps.length - 1 ? (
-            <Button variant="contained" onClick={registerProject} > Save your project</Button>
+            <Button variant="contained" onClick={registerProject}>
+              Save your project
+            </Button>
           ) : (
             <Button onClick={handleNext}>Next</Button>
           )}
-
         </Box>
       </Fragment>
     </Box>
   );
 }
+

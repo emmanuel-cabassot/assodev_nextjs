@@ -24,44 +24,89 @@ export default function PreviewStep() {
     const { user } = useContext(AuthContext);
 
     return (
-
-        <Box display="flex">
-            {/* CARD DU PROJET */}
-            <Card sx={{ maxWidth: 345, m: 3 }} key="1" >
-                <CardHeader
-                    avatar={
-                        <Avatar
-                            key="11"
-                            src={`${urlApiNest}/user/profile-image/${user?.profileImage ? user?.profileImage : "tux_love_windowsd6d93104-a8f5-48c7-b882-f72f204b85cb.png"}`}
-                            aria-label="recipe">
-                        </Avatar>
-                    }
-                    action={
-                        <IconButton disabled>
-                            {
-                                isSearchPersonn ?
-                                    <PersonSearchIcon style={{ color: "green" }} /> : <PersonAddDisabledOutlinedIcon />
-                            }
+            <Box display="flex">
+                {/* CARD DU PROJET */}
+                <Card sx={{ maxWidth: 345, m: 3 }} key="1" >
+                    <CardHeader
+                        avatar={
+                            <Avatar
+                                key="11"
+                                src={`${urlApiNest}/user/profile-image/${user?.profileImage ? user?.profileImage : "tux_love_windowsd6d93104-a8f5-48c7-b882-f72f204b85cb.png"}`}
+                                aria-label="recipe">
+                            </Avatar>
+                        }
+                        action={
+                            <IconButton disabled>
+                                {
+                                    isSearchPersonn ?
+                                        <PersonSearchIcon style={{ color: "green" }} /> : <PersonAddDisabledOutlinedIcon />
+                                }
+                            </IconButton>
+                        }
+                        title={name}
+                        subheader="now"
+                    />
+                    <CardMedia
+                        component="img"
+                        height="194"
+                        image={`${imageUrl}`}
+                        alt="Image du projet"
+                    />
+                    <CardContent>
+                        {/* description du projet */}
+                        <Typography variant="body2" color="text.secondary">
+                            {shortDescription}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" paddingTop="15px">
+                            Technos
+                        </Typography>
+                        {/* compétences du projet */}
+                        <Typography variant="body2" color="text.secondary">
+                            {competences.map((competence: any) => {
+                                console.log('competence', competence)
+                                return (
+                                    <Chip
+                                        label={competence.name}
+                                        sx={{ m: 0.5 }}
+                                    />
+                                )
+                            })}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" paddingTop="15px">
+                            Team
+                        </Typography>
+                        {/* avatar des membres de l'équipe */}
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Avatar
+                                key="1122"
+                                src={`${urlApiNest}/user/profile-image/${user?.profileImage ? user?.profileImage : "tux_love_windowsd6d93104-a8f5-48c7-b882-f72f204b85cb.png"}`}
+                                aria-label="recipe">
+                            </Avatar>
+                        </Box>
+                    </CardContent>
+                    <CardActions disableSpacing>
+                        <IconButton aria-label="add to favorites">
+                            <FavoriteIcon />
                         </IconButton>
-                    }
-                    title={name}
-                    subheader="now"
-                />
-                <CardMedia
-                    component="img"
-                    height="194"
-                    image={`${imageUrl}`}
-                    alt="Image du projet"
-                />
-                <CardContent>
-                    {/* description du projet */}
-                    <Typography variant="body2" color="text.secondary">
-                        {shortDescription}
+                        <IconButton aria-label="share">
+                            <ShareIcon />
+                        </IconButton>
+                    </CardActions>
+                </Card>
+
+
+                {/* DETAIL DU PROJET */}
+                <Box sx={{ display: 'flex', flexDirection: 'column', m: 3, width: 700 }}>
+                    {/* titre du projet */}
+                    <Typography variant="h5" component="div" gutterBottom>
+                        {name}
                     </Typography>
+                    {/* image du projet */}
+                    <Image src={`${imageUrl}`} alt="Image du projet" width={700} height={400} />
+                    {/* compétences du projet */}
                     <Typography variant="body2" color="text.secondary" paddingTop="15px">
                         Technos
                     </Typography>
-                    {/* compétences du projet */}
                     <Typography variant="body2" color="text.secondary">
                         {competences.map((competence: any) => {
                             console.log('competence', competence)
@@ -73,76 +118,31 @@ export default function PreviewStep() {
                             )
                         })}
                     </Typography>
+                    {/* Avatar du créateur */}
                     <Typography variant="body2" color="text.secondary" paddingTop="15px">
-                        Team
+                        Members
                     </Typography>
-                    {/* avatar des membres de l'équipe */}
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
+
                         <Avatar
                             key="1122"
                             src={`${urlApiNest}/user/profile-image/${user?.profileImage ? user?.profileImage : "tux_love_windowsd6d93104-a8f5-48c7-b882-f72f204b85cb.png"}`}
                             aria-label="recipe">
                         </Avatar>
                     </Box>
-                </CardContent>
-                <CardActions disableSpacing>
-                    <IconButton aria-label="add to favorites">
-                        <FavoriteIcon />
-                    </IconButton>
-                    <IconButton aria-label="share">
-                        <ShareIcon />
-                    </IconButton>
-                </CardActions>
-            </Card>
-
-
-            {/* DETAIL DU PROJET */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', m: 3, width: 700 }}>
-                {/* titre du projet */}
-                <Typography variant="h5" component="div" gutterBottom>
-                    {name}
-                </Typography>
-                {/* image du projet */}
-                <Image src={`${imageUrl}`} alt="Image du projet" width={700} height={400} />
-                {/* compétences du projet */}
-                <Typography variant="body2" color="text.secondary" paddingTop="15px">
-                    Technos
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    {competences.map((competence: any) => {
-                        console.log('competence', competence)
-                        return (
-                            <Chip
-                                label={competence.name}
-                                sx={{ m: 0.5 }}
-                            />
-                        )
-                    })}
-                </Typography>
-                {/* Avatar du créateur */}
-                <Typography variant="body2" color="text.secondary" paddingTop="15px">
-                        Members
+                    {/* is search collaborator */}
+                    <Typography variant="body2" color="text.secondary" paddingTop="15px">
+                        search collaborator
+                        {isSearchPersonn ? <PersonSearchIcon style={{ color: "green" }} /> : <PersonAddDisabledOutlinedIcon />}
                     </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-
-                    <Avatar
-                        key="1122"
-                        src={`${urlApiNest}/user/profile-image/${user?.profileImage ? user?.profileImage : "tux_love_windowsd6d93104-a8f5-48c7-b882-f72f204b85cb.png"}`}
-                        aria-label="recipe">
-                    </Avatar>
+                    {/* description du projet */}
+                    <Typography variant="body2" color="text.secondary" paddingTop="15px">
+                        Description
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                        {React.createElement('div', { dangerouslySetInnerHTML: { __html: description } })}
+                    </Typography>
                 </Box>
-                {/* is search collaborator */}
-                <Typography variant="body2" color="text.secondary" paddingTop="15px">
-                    {isSearchPersonn ? "Recherche de collaborateur" : "Pas de recherche de collaborateur"}
-                </Typography>
-                {/* description du projet */}
-                <Typography variant="body2" color="text.secondary" paddingTop="15px">
-                    Description
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    {React.createElement('div', { dangerouslySetInnerHTML: { __html: description } })}
-                </Typography>
             </Box>
-        </Box>
     );
 }

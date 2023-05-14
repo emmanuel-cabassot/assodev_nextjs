@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { AuthContext } from '../../context/authContext';
-import { useContext, useEffect, useState } from 'react';
+import { LayoutContext } from '../../context/layoutContext';
+import { useContext, useEffect, useState, useRef } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -19,11 +20,12 @@ const urlApiNest = process.env.NEXT_PUBLIC_NEXT_APP_API_URL;
 
 const pages = [{ id: 1, name: 'home', url: '/' }, { id: 2, name: 'Events', url: '/events' }, { id: 3, name: 'About', url: '/about-us' }, { id: 4, name: 'Projects', url: '/projects' }, { id: 5, name: 'Start project', url: '/start-project' }]
 const userConnected = [{ id: 11, name: 'Profile', url: '/profile' }];
-const userNotConnected = [{ id:21, name: 'Login', url: '/auth/login' }, { id: 22, name: 'Register', url: '/auth/register' }];
+const userNotConnected = [{ id: 21, name: 'Login', url: '/auth/login' }, { id: 22, name: 'Register', url: '/auth/register' }];
 
 export const Header = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
 
   const logoutAndCloseMenu = () => {
     logout();
@@ -45,18 +47,29 @@ export const Header = () => {
     setAnchorElUser(null);
   };
 
-
   const { meInfos, logout, user } = useContext(AuthContext);
+  const { saveHeaderHeight } = useContext(LayoutContext);
+
   useEffect(() => {
     meInfos();
+
   }, []);
+
+  useEffect(() => {
+    if (headerRef.current) {
+      saveHeaderHeight(headerRef.current.offsetHeight);
+      console.log('headerRef', headerRef.current.offsetHeight);
+    }
+  }, [headerRef.current]);
 
   const imageProfile = user && user.profileImage != null ? user.profileImage : "tux_love_windowsd6d93104-a8f5-48c7-b882-f72f204b85cb.png";
 
   return (
     <>
-      <AppBar 
-      position="static">
+      <AppBar
+        position="static"
+        ref={headerRef}
+        >
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -110,7 +123,7 @@ export const Header = () => {
                 }}
               >
                 {pages.map((page) => (
-                  <Link key={page.id +1} href={page.url} passHref legacyBehavior>
+                  <Link key={page.id + 1} href={page.url} passHref legacyBehavior>
                     <MenuItem key={page.name + 1} onClick={handleCloseNavMenu}>
                       <Typography textAlign="center">{page.name}</Typography>
                     </MenuItem>
@@ -160,7 +173,7 @@ export const Header = () => {
                 <>
                   <Tooltip title="Open settings">
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                        <Avatar alt="avatar" sx={{ bgcolor: "white" }} src={`${urlApiNest}/user/profile-image/${imageProfile}`} />
+                      <Avatar alt="avatar" sx={{ bgcolor: "white" }} src={`${urlApiNest}/user/profile-image/${imageProfile}`} />
                     </IconButton>
                   </Tooltip>
                   <Menu
