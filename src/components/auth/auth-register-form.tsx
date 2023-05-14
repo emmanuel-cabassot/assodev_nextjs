@@ -51,20 +51,20 @@ export default function SignUp() {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        let imageToSend: any  = null
+        let imageToSend: any = null
         // Envoyer l'image au serveur pour le traitement ici
-        if ( image && image != '' ) {
+        if (image && image != '') {
             imageToSend = new FormDataImage()
             imageToSend.append('file', image);
             console.log('formData', imageToSend)
             console.log('image', image.size)
-            
+
             AvatarUploadReqApi(imageToSend, token)
         }
-            
+
         const data = new FormData(event.currentTarget);
         const dataRegister = ({
-            surname: data.get('surname'), 
+            surname: data.get('surname'),
             email: data.get('email'),
             password: data.get('password'),
         });

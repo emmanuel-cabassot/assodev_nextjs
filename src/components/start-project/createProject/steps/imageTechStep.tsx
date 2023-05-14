@@ -7,10 +7,10 @@ const FormDataImage = require('form-data');
 
 interface option {
     name: string;
-    id:number;
+    id: number;
 }
 
-export default function ImageStep() {
+export default function ImageStep(height: any) {
 
     // récupère les compétences de la base de données
     useEffect(() => {
@@ -49,23 +49,26 @@ export default function ImageStep() {
     }
 
     // envoie les compétences au context
-    const handleChangeCompetences = ( newValue: object) => {
+    const handleChangeCompetences = (newValue: object) => {
         console.log('newValue', newValue)
         saveCompetences(newValue)
         console.log('competences', competences)
         // ajout de la new value dans le tableau des compétences
 
     }
-    console.log('competences', competences)
 
     return (
-        <Container component="main" maxWidth="xs">
+        <Container
+            maxWidth="xs"
+            sx={{
+                minHeight: height,
+
+            }}
+        >
             <CssBaseline />
             {/* Box pour l'image */}
             <Box
                 sx={{
-                    marginTop: 5,
-                    marginBottom: 5,
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
@@ -104,7 +107,7 @@ export default function ImageStep() {
                 id="tags-standard"
                 value={competences}
                 options={competencesList}
-                getOptionLabel={(option : any) => option.name}
+                getOptionLabel={(option: any) => option.name}
                 defaultValue={[]}
                 onChange={(event, newValue) => {
                     handleChangeCompetences(newValue)
@@ -115,7 +118,7 @@ export default function ImageStep() {
                         variant="standard"
                         label="Technos"
                         placeholder="Technos"
-                    />  
+                    />
                 )}
 
             />

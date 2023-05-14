@@ -25,6 +25,7 @@ export const CreateProjectFormContext = createContext({
     VerifyIsCompleteForm: () => { },
     isComplete: false,
     registerProject: () => { },
+    missingInformation: () => { },
 });
 
 export const CreateProjectFormProvider = ({ children }: { children: ReactNode }) => {
@@ -69,7 +70,7 @@ export const CreateProjectFormProvider = ({ children }: { children: ReactNode })
     const saveIsSearchPersonn = (statusSearchPersonn: any) => {
         setIsSearchPersonn(statusSearchPersonn);
     };
-    
+
     const VerifyIsCompleteForm = () => {
         if (name != '' && shortDescription != '' && description.replace(/<(.|\n)*?>/g, '').trim().length !== 0) {
             setIsComplete(true);
@@ -78,6 +79,23 @@ export const CreateProjectFormProvider = ({ children }: { children: ReactNode })
             setIsComplete(false);
         }
     };
+
+    // retourne un tableau clef valeur avec en clef le nom du champ et en valeur le message d'erreur
+    const missingInformation = () => {
+        let missingInformation = [];
+        if (name == '') {
+            missingInformation.push({ name: 'name', message: 'Le nom du projet' });
+        }
+        if (shortDescription == '') {
+            missingInformation.push({ name: 'shortDescription', message: 'La description courte du projet' });
+        }
+        if (description.replace(/<(.|\n)*?>/g, '').trim().length === 0) {
+            missingInformation.push({ name: 'description', message: 'La description du projet' });
+        }
+        return missingInformation;
+    };
+
+
 
     // methode qui enregistre le projet dans la base de donnée
     const registerProject = async () => {
@@ -129,6 +147,7 @@ export const CreateProjectFormProvider = ({ children }: { children: ReactNode })
         isComplete,
         VerifyIsCompleteForm,
         registerProject,
+        missingInformation
     };
     return (
         <CreateProjectFormContext.Provider value={context}>
